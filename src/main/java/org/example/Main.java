@@ -1,19 +1,29 @@
 package org.example;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        final var validPaths = List.of("/index.html", "/spring.svg", "/spring.png", "/resources.html", "/styles.css",
+                "/app.js", "/links.html", "/forms.html", "/classic.html", "/events.html", "/events.js");
+        final var server = new Server(validPaths);
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+        // Добавление хендлеров
+        server.addHandler("GET", "/messages", (request, responseStream) -> {
+            String response = "GET messages response";
+            responseStream.write(("HTTP/1.1 200 OK\r\n\r\n" + response).getBytes());
+            responseStream.flush();
+        });
 
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
-        }
+        server.addHandler("POST", "/messages", (request, responseStream) -> {
+            // Здесь можно обработать тело запроса
+            String response = "POST messages response";
+            responseStream.write(("HTTP/1.1 200 OK\r\n\r\n" + response).getBytes());
+            responseStream.flush();
+        });
+
+        // Запуск сервера
+        server.listen(9999);
     }
 }
+
