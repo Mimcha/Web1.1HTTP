@@ -3,6 +3,8 @@ package org.example;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +81,15 @@ public class Server {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    private Handler findHandler(String method, String path) {
+        try {
+            URI uri = new URI(path);
+            path = uri.getPath();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        return handlers.getOrDefault(method, new HashMap<>()).get(path);
     }
 
     private void send404(BufferedOutputStream responseStream) throws IOException {
